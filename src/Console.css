@@ -465,3 +465,70 @@
     opacity: 0;
   }
 }
+
+/* ---------- boot sequence ---------- */
+.boot {
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.boot p {
+  margin: 0 0 0.35rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  white-space: pre;
+}
+.boot .ok {
+  color: var(--led-green);
+}
+.boot .pad {
+  display: inline-block;
+  width: 8ch;
+}
+.cursor-block {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  vertical-align: text-bottom;
+  background: var(--led-amber);
+  animation: blink 1s steps(1) infinite;
+}
+.bar-track {
+  height: 3px;
+  margin-top: auto;
+  background: #1b2428;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.bar-track i {
+  display: block;
+  height: 100%;
+  background: var(--led-green);
+  box-shadow: 0 0 8px var(--led-green);
+  transition: width 0.13s linear;
+}
+.boot .skip {
+  margin: 0.7rem 0 0;
+  font-size: 0.66rem;
+  white-space: normal;
+  opacity: 0.6;
+}
+.reveal {
+  animation: fade 0.3s ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor-block,
+  .reveal {
+    animation: none;
+  }
+}
+@media (max-width: 900px) {
+  .boot .pad {
+    width: 8ch;
+  }
+  .boot p {
+    white-space: pre-wrap;
+  }
+}

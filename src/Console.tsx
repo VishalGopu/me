@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { units } from './content'
 import Hardware, { Leds } from './Hardware'
 import { About, Contact, Experience, Projects, Skills } from './Sections'
+import Boot from './Boot'
 import Terminal from './Terminal'
 import { useStore } from './store'
 
@@ -18,6 +19,8 @@ const VIEWS = {
 export default function Console() {
   const open = useStore((s) => s.open)
   const setOpen = useStore((s) => s.setOpen)
+  const booted = useStore((s) => s.booted)
+  const markBooted = useStore((s) => s.markBooted)
   const closeRef = useRef<HTMLButtonElement>(null)
   const unit = units.find((u) => u.key === open)
 
@@ -28,6 +31,8 @@ export default function Console() {
   if (!unit) return null
   const View = VIEWS[unit.key]
   const idx = units.indexOf(unit)
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const booting = !booted.includes(unit.key) && !reduce
 
   return (
     <div className="backdrop" onClick={() => setOpen(null)}>
@@ -82,8 +87,14 @@ export default function Console() {
                 </button>
               </span>
             </div>
-            <div className="viewport">
-              <View />
+            <div className="viewport" aria-busy={booting}>
+              {booting ? (
+                <Boot key={unit.key} unit={unit} onDone={() => markBooted(unit.key)} />
+              ) : (
+                <div className="reveal">
+                  <View />
+                </div>
+              )}
             </div>
           </div>
         </div>
