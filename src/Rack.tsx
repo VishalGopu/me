@@ -43,6 +43,13 @@ export default function Rack() {
           </span>
         </div>
 
+        {/* cable manager: finger duct that tidies the patch cables */}
+        <div className="unit manager" aria-hidden="true">
+          <Screws />
+          <span className="duct" />
+          <span className="etch-label">cable-mgr · 1U</span>
+        </div>
+
         {units.map((u, i) => (
           <button
             key={u.key}
@@ -81,14 +88,14 @@ export default function Rack() {
           </span>
         </div>
 
-        <svg className="cables" viewBox="0 0 470 644">
+        <svg className="cables" viewBox="0 0 470 682">
           {CABLES.map((c, i) => {
             const x = 256 + 19 * i
             const ty = 14 + i * 2.2
             const out = 478 + i * 7
             const off = unplugged.includes(i)
             const startY = off ? 118 + (i % 3) * 8 : 72
-            const route = `V 38 Q ${x} ${ty} ${x + 14} ${ty} H ${out - 12} Q ${out} ${ty} ${out} ${ty + 22} V 590 q 0 16 -9 24`
+            const route = `V 38 Q ${x} ${ty} ${x + 14} ${ty} H ${out - 12} Q ${out} ${ty} ${out} ${ty + 22} V 628 q 0 16 -9 24`
             const toggle = () => toggleCable(i)
             return (
               <g

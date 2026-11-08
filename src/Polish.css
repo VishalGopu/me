@@ -503,3 +503,85 @@ h1 {
     animation: none;
   }
 }
+
+/* ============ design pass: labels, hover, gap, hero balance ============ */
+/* bigger, higher-contrast unit labels */
+.plate {
+  width: 114px;
+}
+.plate b {
+  font-size: 0.92rem;
+  color: #0b0d10;
+}
+.plate small {
+  font-size: 0.62rem;
+  color: #3a3e46;
+}
+
+/* hover / focus: brighten LEDs and highlight the label */
+.unit.live:hover .led,
+.unit.live:focus-visible .led {
+  animation: none;
+  opacity: 1;
+  filter: brightness(1.7) saturate(1.2);
+  box-shadow: 0 0 14px currentColor, 0 0 3px currentColor;
+}
+.unit.live:hover .bay.lit::after,
+.unit.live:focus-visible .bay.lit::after,
+.unit.live:hover .rj.link::after,
+.unit.live:focus-visible .rj.link::after {
+  filter: brightness(1.6);
+  box-shadow: 0 0 9px currentColor;
+}
+.unit.live:hover .plate,
+.unit.live:focus-visible .plate {
+  background: #fff3cf;
+  box-shadow: 0 0 0 2px var(--led-amber), 0 0 14px rgba(255, 176, 32, 0.45);
+}
+
+/* cable manager under the patch panel */
+.unit.manager {
+  height: 34px;
+  padding: 0 1.1rem;
+  background:
+    repeating-linear-gradient(90deg, #0a0c0f 0 12px, #1b1f25 12px 15px),
+    #0a0c0f;
+  box-shadow: inset 0 2px 6px #000, 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.unit.manager .duct {
+  position: absolute;
+  inset: 5px 22px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, #14171b 0 11px, #2a2f36 11px 13px);
+  box-shadow: inset 0 0 0 1px #3a414b;
+}
+.unit.manager .etch-label {
+  position: relative;
+  margin-left: auto;
+  padding: 1px 6px;
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+  background: #0e1114;
+  border-radius: 2px;
+}
+.cables {
+  height: 682px;
+}
+
+/* stacked, larger name balances the tall rack */
+h1 {
+  font-size: clamp(3.4rem, 8.4vw, 8.2rem);
+  line-height: 0.93;
+  white-space: normal;
+}
+h1 .line {
+  display: block;
+}
+.cursor {
+  vertical-align: baseline;
+}
+.tagline {
+  max-width: 24ch;
+  font-size: clamp(1.3rem, 2.3vw, 1.85rem);
+}

@@ -36,8 +36,11 @@ export default function Hero() {
       </p>
 
       <h1>
-        {profile.name}
-        <span className="cursor" aria-hidden="true" />
+        <span className="line">{profile.name.split(' ')[0]}</span>{' '}
+        <span className="line">
+          {profile.name.split(' ')[1]}
+          <span className="cursor" aria-hidden="true" />
+        </span>
       </h1>
       <p className="tagline">{hero.tagline}</p>
       <p className="sub">{hero.sub}</p>
