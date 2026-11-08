@@ -585,3 +585,33 @@ h1 .line {
   max-width: 24ch;
   font-size: clamp(1.3rem, 2.3vw, 1.85rem);
 }
+
+/* ============ keyboard hints: fade in on load, dim after 5s ============ */
+.hints {
+  opacity: 0;
+  animation: hintIn 0.8s ease 0.8s forwards, hintDim 1s ease 5.8s forwards;
+  transition: opacity 0.2s;
+}
+.hints:hover {
+  opacity: 1;
+  animation: none;
+}
+@keyframes hintIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes hintDim {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hints {
+    animation: none;
+    opacity: 0.6;
+  }
+}
