@@ -69,3 +69,16 @@ body {
   outline: 2px solid var(--led-blue);
   outline-offset: 3px;
 }
+
+/* Respect reduced motion everywhere: LEDs, cables, boot, transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
