@@ -1,0 +1,467 @@
+/* The pulled-out server and its KVM screen */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(8, 10, 13, 0.74);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: fade 0.25s ease both;
+}
+.pulled {
+  display: flex;
+  flex-direction: column;
+  width: min(900px, 100%);
+  max-height: 100%;
+  perspective: 1400px;
+  animation: slideOut 0.5s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+.chassis {
+  flex: none;
+  height: auto;
+  min-height: 62px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 20px 40px rgba(0, 0, 0, 0.5);
+}
+.chassis.kind-storage .hw {
+  justify-content: center;
+}
+.chassis .bay {
+  height: 26px;
+}
+.chassis .bays.n4 {
+  grid-template-columns: repeat(4, 34px);
+}
+.chassis .hw {
+  margin-right: 8.5rem;
+}
+.chassis .leds {
+  right: 8.2rem;
+  top: 50%;
+  margin-top: -3.5px;
+}
+.eject {
+  position: absolute;
+  right: 1.3rem;
+  top: 50%;
+  margin-top: -14px;
+  height: 28px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 0.7rem;
+  color: var(--text);
+  background: linear-gradient(180deg, #3a414c, #23282f);
+  border: 1px solid #0c0e11;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.eject:hover {
+  color: #14181e;
+  background: var(--led-amber);
+}
+/* slide rails under the chassis */
+.slides {
+  flex: none;
+  height: 9px;
+  margin: 0 16px;
+  background: linear-gradient(180deg, var(--rack-rail), var(--rack-rail-dark));
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
+}
+
+/* KVM screen */
+.screen {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  margin: 14px 28px 0;
+  padding: 14px;
+  background: linear-gradient(180deg, #1c2026, #111418);
+  border: 1px solid #07080a;
+  border-radius: 12px 12px 6px 6px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+.glass {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 3px),
+    #0c1214;
+  border-radius: 6px;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6), 0 0 0 1px #000;
+}
+.tty {
+  flex: none;
+  margin: 0;
+  padding: 10px 18px;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  border-bottom: 1px solid #1b2428;
+}
+.viewport {
+  flex: 1;
+  min-height: 0;
+  max-height: calc(100vh - 250px);
+  padding: 20px 22px 26px;
+  overflow: auto;
+}
+
+/* ---------- section content ---------- */
+.sec h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+}
+.sec h3 {
+  margin: 1.8rem 0 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--led-amber);
+}
+.sec p {
+  margin: 0;
+  line-height: 1.65;
+}
+.lead {
+  max-width: 62ch;
+  font-size: 0.95rem;
+}
+.dim {
+  color: var(--text-dim);
+}
+.sec .hintline {
+  margin: 0 0 1.1rem;
+  font-size: 0.78rem;
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rows li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #1b2428;
+  font-size: 0.85rem;
+}
+.rows b,
+.rows span {
+  display: block;
+}
+.rows span {
+  color: var(--text-dim);
+  font-size: 0.78rem;
+}
+.rows .right {
+  text-align: right;
+  white-space: nowrap;
+}
+.callout {
+  padding: 0.9rem 1rem;
+  background: rgba(255, 176, 32, 0.07);
+  border-left: 3px solid var(--led-amber);
+  border-radius: 3px;
+  font-size: 0.85rem;
+}
+.callout p {
+  margin-top: 0.4rem;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
+
+.job {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.job p {
+  margin-top: 0.2rem;
+}
+.when {
+  font-size: 0.78rem;
+  color: var(--led-green);
+}
+.bullets {
+  margin: 1.2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.bullets li {
+  position: relative;
+  padding: 0 0 0.9rem 1.3rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.bullets li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--led-green);
+}
+.bullets.small {
+  margin-top: 0.8rem;
+}
+.bullets.small li {
+  font-size: 0.8rem;
+  padding-bottom: 0.6rem;
+  color: var(--text-dim);
+}
+
+/* projects: drive caddies */
+.caddies {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+.caddy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem 1rem;
+  font: inherit;
+  text-align: left;
+  color: var(--text);
+  background: linear-gradient(180deg, #1d2229, #14181d);
+  border: 1px solid #2a3139;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.caddy:hover {
+  transform: translateY(-2px);
+  border-color: var(--led-amber);
+}
+.caddy.out {
+  grid-column: 1 / -1;
+  border-color: var(--led-green);
+}
+.caddy-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.serial {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+.caddy b {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+}
+.caddy .led.idle {
+  color: var(--led-amber);
+}
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  padding: 2px 8px;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  border: 1px solid #2f3740;
+  border-radius: 999px;
+}
+
+/* skills: ports */
+.groups {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.4rem 2rem;
+}
+.group h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 0.7rem;
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.wire {
+  display: block;
+  width: 22px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--cable-blue);
+}
+.wire.yellow {
+  background: var(--cable-yellow);
+}
+.wire.red {
+  background: var(--cable-red);
+}
+.wire.orange {
+  background: var(--cable-orange);
+}
+.wire.green {
+  background: var(--cable-green);
+}
+.wire.white {
+  background: var(--cable-white);
+}
+.portlist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.portlist li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 9px;
+  font-size: 0.74rem;
+  background: #131a1d;
+  border: 1px solid #222c31;
+  border-radius: 3px;
+}
+
+/* contact */
+.links {
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.links a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.85rem 0.6rem;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid #1b2428;
+  font-size: 0.85rem;
+}
+.links a:hover {
+  background: rgba(61, 220, 132, 0.06);
+}
+.links .k {
+  width: 5.5rem;
+  color: var(--text-dim);
+}
+.links .v {
+  color: var(--led-green);
+}
+
+/* terminal */
+.term {
+  min-height: 300px;
+  font-size: 0.82rem;
+  cursor: text;
+}
+.term pre {
+  margin: 0 0 0.5rem;
+  font: inherit;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+}
+.term pre.in {
+  color: var(--led-green);
+}
+.term-in {
+  display: flex;
+  gap: 8px;
+  color: var(--led-green);
+}
+.term-in input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  caret-color: var(--led-amber);
+}
+
+/* ---------- motion ---------- */
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes slideOut {
+  from {
+    opacity: 0.2;
+    transform: translate(34vw, -3vh) scale(0.5) rotateY(14deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .pulled {
+    animation: none;
+  }
+  .caddy {
+    transition: none;
+  }
+}
+
+/* ---------- phones: full-screen sheet ---------- */
+@media (max-width: 900px) {
+  .backdrop {
+    padding: 0;
+    place-items: stretch;
+  }
+  .pulled {
+    width: 100%;
+    height: 100%;
+    animation-name: sheet;
+  }
+  .chassis .hw,
+  .chassis .leds {
+    display: none;
+  }
+  .screen {
+    margin: 12px 8px 8px;
+    padding: 8px;
+  }
+  .viewport {
+    max-height: none;
+    padding: 16px 14px 24px;
+  }
+  .caddies,
+  .groups {
+    grid-template-columns: 1fr;
+  }
+  .rows li {
+    flex-direction: column;
+  }
+  .rows .right {
+    text-align: left;
+  }
+}
+@keyframes sheet {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+}

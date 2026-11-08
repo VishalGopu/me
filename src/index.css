@@ -1,0 +1,71 @@
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/700.css';
+
+/*
+  Real-world colours, taken from an actual server room:
+  matte black rack, brushed steel rails, LED status lights,
+  and the standard Cat6 patch-cable colours.
+*/
+:root {
+  /* room */
+  --room-top: #1d3342;
+  --room-bottom: #091017;
+  --light-warm: rgba(255, 200, 130, 0.2);
+
+  /* rack hardware */
+  --rack-frame: #15181d;
+  --rack-rail: #8d96a1;
+  --rack-rail-dark: #5d646d;
+  --face: #2b3038;
+  --face-hi: #343a44;
+  --face-lo: #22262d;
+  --screw: #aab2bc;
+
+  /* text */
+  --text: #f1ece2;
+  --text-dim: #a9b0ba;
+
+  /* LEDs */
+  --led-green: #3ddc84;
+  --led-amber: #ffb020;
+  --led-blue: #3b9bff;
+  --led-red: #ff4d4d;
+
+  /* patch cables */
+  --cable-blue: #2f6fd8;
+  --cable-yellow: #f4c20d;
+  --cable-red: #d93b3b;
+  --cable-orange: #f28c28;
+  --cable-green: #2fa84f;
+  --cable-white: #e8e8e3;
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  color: var(--text);
+  font-family: var(--font-mono);
+  background: var(--room-bottom);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--led-blue);
+  outline-offset: 3px;
+}

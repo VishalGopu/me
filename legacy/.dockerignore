@@ -1,0 +1,6 @@
+*
+!index.html
+!config.js
+!nginx.conf
+!docker-entrypoint.d
+!Dockerfile

@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gopu Vishal — Systems, Networking &amp; DevOps</title>
+<meta name="description" content="Portfolio of Gopu Vishal: Kubernetes, networking and DevOps engineering, running on its own live cluster.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   THEME
+   ========================================================================== */
+:root{
+  --bg:#070b10; --ink:#dbe7f3; --dim:#8094a8; --faint:#4d6072;
+  --line:rgba(160,200,230,.13); --panel:rgba(12,19,28,.84); --panel2:rgba(20,31,43,.92);
+  --cyan:#38e1d0; --amber:#f5b942; --green:#4ee38a; --red:#ff6b6b; --blue:#6ea8ff;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font:13.5px/1.6 var(--mono); color:var(--ink); background:var(--bg);
+  height:100dvh; overflow:hidden; display:grid; grid-template-rows:auto minmax(0,1fr) auto;
+  background-image:
+    radial-gradient(900px 600px at 78% 28%, rgba(56,225,208,.11), transparent 60%),
+    radial-gradient(700px 500px at 92% 92%, rgba(245,185,66,.07), transparent 60%),
+    radial-gradient(600px 520px at 4% 100%, rgba(110,168,255,.08), transparent 60%),
+    linear-gradient(rgba(140,180,210,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(140,180,210,.045) 1px, transparent 1px);
+  background-size:auto,auto,auto,44px 44px,44px 44px;
+}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+a{color:var(--cyan);text-decoration:none} a:hover{text-decoration:underline}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.dim{color:var(--dim)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- top bar ---------- */
+.topbar{display:flex;align-items:center;gap:22px;padding:8px 18px;border-bottom:1px solid var(--line);
+  background:rgba(7,11,16,.8);backdrop-filter:blur(8px);font-size:12px;color:var(--dim);position:relative;z-index:6}
+.topbar .who{color:var(--ink)} .topbar .who b{color:var(--cyan)}
+.statline{display:flex;gap:20px;margin-left:auto}
+.statline b{color:var(--ink);font-weight:400}
+
+/* ---------- stage ---------- */
+.stage{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(340px,5fr) 7fr;padding:0 22px}
+#scene{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+.hero{grid-column:1;align-self:center;position:relative;z-index:2;padding:8px 0}
+.mode{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+  padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(10,16,23,.7);margin-bottom:18px}
+.mode i{width:7px;height:7px;border-radius:50%;background:var(--faint)}
+.mode.live{color:var(--green);border-color:rgba(78,227,138,.35)} .mode.live i{background:var(--green);box-shadow:0 0 10px var(--green);animation:beat 1.8s ease-in-out infinite}
+.mode.replay{color:var(--amber);border-color:rgba(245,185,66,.35)} .mode.replay i{background:var(--amber)}
+.mode.sim{color:var(--cyan);border-color:rgba(56,225,208,.3)} .mode.sim i{background:var(--cyan)}
+.mode span{color:var(--dim);text-transform:none;letter-spacing:0}
+@keyframes beat{50%{opacity:.35}}
+.kicker{color:var(--cyan);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+h1{font:700 clamp(50px,6.6vw,100px)/.93 var(--sans);letter-spacing:-.035em;text-shadow:0 0 60px rgba(56,225,208,.22)}
+.cursor{display:inline-block;width:.4em;height:.11em;background:var(--amber);margin-left:.1em;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.lede{margin-top:20px;max-width:46ch;color:#b8c8d6;font-size:14px}
+
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:24px;max-width:520px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:9px 11px 6px;background:linear-gradient(180deg,rgba(24,36,50,.7),rgba(12,19,28,.7));backdrop-filter:blur(6px)}
+.tl{font-size:10px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+.tv{font:600 20px/1.2 var(--sans);margin:1px 0 2px;white-space:nowrap}
+.tv small{font:400 11px var(--mono);color:var(--dim);margin-left:2px}
+.tile .ch{display:block;width:100%;height:24px}
+.pds{display:flex;gap:3px;height:24px;align-items:center;flex-wrap:wrap}
+.pd{width:7px;height:7px;border-radius:2px;background:var(--faint)}
+.pd.run{background:var(--green)} .pd.pend{background:var(--amber)} .pd.err{background:var(--red)}
+
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);background:rgba(14,22,31,.75);backdrop-filter:blur(6px);
+  padding:9px 14px;border-radius:8px;font-size:13px;transition:border-color .15s,transform .15s,background .15s}
+.btn:hover{border-color:var(--cyan);background:var(--panel2);transform:translateY(-1px);text-decoration:none}
+.btn.primary{border-color:rgba(56,225,208,.45);color:var(--cyan)}
+kbd{font:11px var(--mono);color:var(--dim);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+.svc-list{display:none;gap:10px;margin-top:22px;grid-template-columns:1fr 1fr}
+.svc{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px 12px;text-align:left}
+.svc b{display:block;font-weight:600} .svc span{color:var(--dim);font-size:12px}
+
+#tip{position:absolute;z-index:4;pointer-events:none;display:none;max-width:280px;font-size:12px;line-height:1.5;
+  background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 11px;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+#tip b{color:var(--ink)} #tip .cta{color:var(--cyan)}
+.hint{position:absolute;right:26px;bottom:12px;z-index:2;font-size:11px;color:var(--faint)}
+
+/* ---------- windows ---------- */
+#desk{position:absolute;inset:0;pointer-events:none;z-index:5}
+.win{position:absolute;pointer-events:auto;display:flex;flex-direction:column;max-height:calc(100% - 24px);
+  background:var(--panel);backdrop-filter:blur(16px) saturate(1.2);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 26px 70px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.02) inset;animation:pop .18s ease-out}
+.win.focused{border-color:rgba(56,225,208,.4);box-shadow:0 26px 70px rgba(0,0,0,.6),0 0 40px rgba(56,225,208,.08)}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.985)}}
+.win-bar{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;background:rgba(255,255,255,.025);
+  border-bottom:1px solid var(--line);border-radius:12px 12px 0 0;cursor:grab;touch-action:none;user-select:none}
+.win-bar:active{cursor:grabbing}
+.win-title{font-size:12px;color:var(--dim);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.win.focused .win-title{color:var(--ink)} .win-title i{font-style:normal;color:var(--cyan)}
+.win-close{color:var(--dim);padding:2px 8px;border-radius:5px;font-size:14px;line-height:1}
+.win-close:hover{background:rgba(255,107,107,.14);color:var(--red)}
+.win-body{padding:16px 18px 18px;overflow:auto;min-height:0}
+.prompt{color:var(--dim);margin-bottom:12px} .prompt::before{content:"$ ";color:var(--green)}
+.win h2{font:700 25px/1.15 var(--sans);letter-spacing:-.02em;margin-bottom:10px}
+.win h3{font:600 11.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin:20px 0 8px}
+.win p{color:#bccbd8} .win ul{padding-left:18px;color:#bccbd8} .win li{margin:5px 0} .win li::marker{color:var(--cyan)}
+.entry+.entry{margin-top:14px}
+.entry-h{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+.pill{display:inline-flex;align-items:center;gap:6px;padding:0 9px;border-radius:999px;font-size:11.5px;border:1px solid var(--line);white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill.run{color:var(--green);border-color:rgba(78,227,138,.3)} .pill.pend{color:var(--amber);border-color:rgba(245,185,66,.3)}
+.pill.err{color:var(--red);border-color:rgba(255,107,107,.3)} .pill.unk{color:var(--faint)}
+
+.thead,.proj summary{display:grid;grid-template-columns:minmax(0,1.5fr) 118px minmax(0,2fr);gap:10px;align-items:center}
+.thead{font-size:11px;color:var(--faint);letter-spacing:.06em;padding:0 8px 6px;border-bottom:1px solid var(--line)}
+.proj{border-bottom:1px solid var(--line)}
+.proj summary{list-style:none;cursor:pointer;padding:9px 8px;border-radius:8px}
+.proj summary::-webkit-details-marker{display:none} .proj summary:hover{background:rgba(255,255,255,.03)}
+.pname{font-weight:600} .pname::before{content:"▸ ";color:var(--cyan)} .proj[open] .pname::before{content:"▾ "}
+.stk{font-size:12px;color:var(--dim)}
+.detail{padding:2px 8px 14px 26px}
+.live{margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:rgba(0,0,0,.18)}
+.stats{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--dim);align-items:center}
+.stats b{color:var(--ink);font-weight:600}
+.live .ch{display:block;width:100%;height:40px;margin-top:8px}
+.logtail{margin-top:6px;font-size:11.5px;color:var(--dim);white-space:pre-wrap;word-break:break-all;max-height:5.2em;overflow:hidden}
+.links{margin-top:10px;display:flex;gap:14px;font-size:12.5px}
+
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.panel{border:1px solid var(--line);border-radius:10px;padding:10px 12px 8px;background:rgba(0,0,0,.18)}
+.panel .pv{font:600 24px/1.2 var(--sans)} .panel .ch{display:block;width:100%;height:56px;margin-top:4px}
+.lg{font-size:11.5px;color:var(--dim);max-height:9.6em;overflow:hidden;margin-top:6px}
+.lg div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg .w{color:var(--amber)} .lg b{color:var(--cyan);font-weight:400}
+.note{font-size:12px;color:var(--dim);margin-bottom:12px}
+
+.layer{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);align-items:start}
+.layer:last-child{border:0} .layer .ln{color:var(--dim);font-size:12px;padding-top:3px} .layer .ln b{color:var(--cyan);font-weight:600;margin-right:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:rgba(0,0,0,.2);border-radius:999px;padding:2px 10px;font-size:12px}
+.kv{display:grid;grid-template-columns:90px 1fr;gap:8px 14px;margin:6px 0 4px} .kv dt{color:var(--dim)} .kv dd{word-break:break-word}
+
+.term{display:flex;flex-direction:column;height:min(400px,58vh)}
+.t-out{flex:1;overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:12.5px;padding-right:6px}
+.t-line.cmd{color:var(--ink)} .t-line.dim{color:var(--dim)} .t-line.err{color:var(--red)} .t-line.ok{color:var(--green)}
+.t-form{display:flex;gap:8px;align-items:center;border-top:1px solid var(--line);padding-top:10px;margin-top:8px}
+.t-form label{color:var(--green);white-space:nowrap}
+.t-form input{flex:1;min-width:0;background:none;border:0;color:var(--ink);font:inherit;outline:none}
+
+/* ---------- tmux bar ---------- */
+.tmux{display:flex;align-items:stretch;background:#0a1819;border-top:1px solid #1d3a3b;font-size:12px;overflow-x:auto;white-space:nowrap;position:relative;z-index:6}
+.tm-sess{background:var(--cyan);color:#062321;font-weight:600;padding:5px 12px}
+.tm{padding:5px 12px;color:#6f9c9a} .tm:hover{color:var(--ink);background:#0f2527}
+.tm.open{color:var(--ink)} .tm.focused{background:var(--amber);color:#2a1d00;font-weight:600}
+.tm .fl{display:inline-block;width:1ch}
+.tm-r{margin-left:auto;padding:5px 14px;color:#6f9c9a}
+
+@media (max-width:860px){
+  body{display:block;height:auto;min-height:100dvh;overflow:auto;padding-bottom:40px}
+  .stage{display:block;overflow:visible;padding:24px 16px 30px}
+  #scene,#tip,.hint{display:none}
+  .svc-list{display:grid} .statline{display:none} .actions kbd{display:none}
+  .tiles{grid-template-columns:1fr 1fr}
+  #desk{position:fixed;inset:0;z-index:20}
+  .win{position:fixed!important;left:10px!important;top:10px!important;right:10px;bottom:48px;width:auto!important;max-height:none}
+  .win-bar{cursor:default}
+  .tmux{position:fixed;left:0;right:0;bottom:0;z-index:30} .tm-r{display:none}
+  .thead{display:none} .proj summary{grid-template-columns:1fr auto} .proj .stk{grid-column:1/-1}
+  .layer{grid-template-columns:1fr} .panels{grid-template-columns:1fr}
+  .term{height:calc(100dvh - 190px)}
+}
+@media (prefers-reduced-motion:reduce){.cursor,.mode i,.win{animation:none}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="who"><b>●</b> vishal@noc <span class="dim">: ~/portfolio</span></span>
+  <span class="statline" aria-hidden="true">
+    <span>cluster <b id="cl">—</b></span>
+    <span>pods <b id="tp">—</b></span>
+    <span>session <b id="up">00:00</b></span>
+  </span>
+</header>
+
+<main class="stage" id="stage">
+  <canvas id="scene" aria-hidden="true"></canvas>
+
+  <section class="hero">
+    <div class="mode sim" id="mode" role="status"><i></i>connecting…</div>
+    <p class="kicker">// systems · networking · devops</p>
+    <h1>Gopu<br>Vishal<span class="cursor" aria-hidden="true"></span></h1>
+    <p class="lede" id="lede"></p>
+
+    <div class="tiles" aria-label="Cluster vitals">
+      <div class="tile"><div class="tl">pods</div><div class="tv" id="tv-pods">—</div><div class="pds" id="tsp-pods"></div></div>
+      <div class="tile"><div class="tl">req / s</div><div class="tv" id="tv-rps">—</div><div id="tsp-rps"></div></div>
+      <div class="tile"><div class="tl">p95</div><div class="tv" id="tv-p95">—</div><div id="tsp-p95"></div></div>
+      <div class="tile"><div class="tl">cpu</div><div class="tv" id="tv-cpu">—</div><div id="tsp-cpu"></div></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" data-open="projects">open projects <kbd>2</kbd></button>
+      <button class="btn" data-open="observability">live metrics <kbd>3</kbd></button>
+      <button class="btn" data-open="terminal">terminal <kbd>5</kbd></button>
+    </div>
+    <div class="svc-list" id="svcList"></div>
+  </section>
+
+  <div id="tip"></div>
+  <div class="hint" aria-hidden="true">hover a pod · click to open · press 0–6</div>
+  <div id="desk"></div>
+</main>
+
+<nav class="tmux" id="tmux" aria-label="Windows"></nav>
+
+<noscript><p style="padding:20px">This portfolio needs JavaScript. Contact:
+<a href="mailto:gopuvishal003@gmail.com">gopuvishal003@gmail.com</a> · <a href="https://github.com/VishalGopu">GitHub</a></p></noscript>
+
+<script src="config.js"></script>
+<script>
+/* ==========================================================================
+   CONFIG — where live data comes from
+   ========================================================================== */
+const CONFIG = {
+  API_URL: "",              // gateway running in the cluster, e.g. "https://api.yourdomain.dev". Empty = no live backend.
+  REPLAY_URL: "replay.json",// recorded snapshot of the last real run (use the terminal command `snapshot` to export one)
+  GRAFANA_URL: "",          // optional read-only Grafana dashboard link
+  POLL_LIVE_EVERY: 5        // seconds between live fetches
+};
+Object.assign(CONFIG, window.__CONFIG__ || {});   // overridden at runtime by config.js (env vars in the container)
+/* Data priority: LIVE (API reachable)  →  REPLAY (replay.json exists)  →  SIMULATED (built-in demo, always labelled).
+
+   Snapshot JSON the gateway should return at GET {API_URL}/api/snapshot:
+   {
+     "mode":"live", "asOf":"2026-11-07T17:40:00Z",
+     "cluster":{"name":"microk8s","version":"v1.31","nodes":1},
+     "pods":[{"id":"gateway","name":"portfolio-gw-6f7c9d-4kq8z","ns":"edge","status":"Running","restarts":0,
+              "cpu":0.12,            // fraction of its CPU limit, 0..1
+              "memMi":64,"ageSec":3600,"cpuSeries":[...30 numbers...]}],
+     "edges":[["cloudflared","gateway",12.4],["gateway","k8s-rca-mcp",4.1]],   // [from,to,req/s]
+     "totals":{"rps":12.4,"p95ms":58,"cpu":0.23,"memMi":1450},
+     "series":{"rps":[...60],"p95":[...60],"cpu":[...60],"mem":[...60]},
+     "logs":[{"t":"2026-11-07T17:39:58Z","pod":"gateway","level":"info","msg":"GET /projects 200 4ms"}]
+   }
+   Pod ids must match DATA.projects[].name and the node ids in SCENE below. */
+
+/* ==========================================================================
+   YOUR CONTENT
+   ========================================================================== */
+const DATA = {
+  name: "Gopu Vishal", handle: "vishal", host: "noc",
+  role: "Software Engineering Intern · Cyberparadigm",
+  lede: "I like the layers under the app: how a packet reaches a pod, what keeps one tenant out of another's workload, and what to check when it stops working. This page runs on a cluster I operate.",
+  email: "gopuvishal003@gmail.com",
+  linkedin: "https://in.linkedin.com/in/vishal-gopu-831306256",
+  github: "https://github.com/VishalGopu",
+  resume: "resume.pdf",
+
+  about: "I'm a computer science student and software engineering intern working on Kubernetes, networking and platform tooling. Day to day that means multi-tenant isolation, VPN access, CI/CD and the backends that tie them together. Outside work I build agentic tools and small full-stack products.",
+  education: [
+    { school: "Keshav Memorial Institute of Technology", years: "2025 – 2028", detail: "B.Tech, Computer Science & Engineering · CGPA 7.5/10", place: "Hyderabad" },
+    { school: "Government Polytechnic Warangal", years: "2022 – 2025", detail: "Diploma, Computer Science & Engineering · CGPA 9.5/10", place: "Warangal" }
+  ],
+  experience: [{
+    role: "Software Engineering Intern", org: "Cyberparadigm", place: "Hyderabad, India", period: "Oct 2025 – Present",
+    bullets: [
+      "Maintained a self-managed 3-node kubeadm Kubernetes cluster running 250 pods, powering a cybersecurity learning platform and CTF engine used by 127+ learners across 25+ hands-on labs.",
+      "Enforced multi-tenant isolation with Kata Containers (VM-level sandboxing) and Cilium network policies, isolating 100 concurrent tenant workloads at pod level and blocking host-network access.",
+      "Built lab provisioning for both the CTF and learning platforms: an in-cluster operator creating per-team workspaces via server-side apply, with per-tenant resource limits and time-based auto-termination to reclaim idle instances.",
+      "Built an HTTP routing gateway (reverse proxy with signed URLs) and per-member WireGuard VPN access to isolated challenge targets, using AWS IAM roles and Terraform to deploy the VPN infrastructure on demand.",
+      "Built GitLab CI/CD pipelines that build Docker images and deploy services with PM2 and Docker on PR approval, cutting deployment time from 30 min to 2 min.",
+      "Designed PostgreSQL backend services with Prisma ORM for challenge orchestration, session state and dynamic lab provisioning, supporting 300 users."
+    ]
+  }],
+  /* `name` is the pod id: it must match the cluster's pod ids and the nodes in SCENE */
+  projects: [
+    { name: "k8s-rca-mcp", title: "Kubernetes RCA MCP Server", stack: "Kubernetes · MCP · K8s API · Agentic AI", repo: "", demo: "",
+      desc: ["Read-only diagnostic system exposing MCP tools that investigate cluster failures by correlating pod status, logs, events, resource topology and configuration changes.",
+             "Covers workload health, service dependencies, network policies and scheduling failures, producing evidence-driven root-cause analysis and remediation suggestions."] },
+    { name: "agentic-support", title: "Universal Agentic System", stack: "LLMs · Tool calling · APIs · Databases", repo: "", demo: "",
+      desc: ["Reusable agentic customer-support system combining LLM reasoning, tool execution and application databases to handle domain-specific queries and workflows.",
+             "Modular architecture that separates agent orchestration from business logic and data access, so new apps plug in via configurable tools and DB connections."] },
+    { name: "ginpro-erp", title: "GinPro — Ginning ERP Platform", stack: "Mobile · SQLite · Offline sync · RBAC", repo: "", demo: "",
+      desc: ["ERP for cotton-ginning operations: mobile workflows, role-based access control and automated billing.",
+             "Offline-first persistence with SQLite that syncs on reconnect, so operations continue in remote areas with unreliable connectivity."] },
+    { name: "ai-video-gen", title: "AI-Powered Video Generation Platform", stack: "Flask · Remotion · Ollama · VoxCPM", repo: "", demo: "",
+      desc: ["Video pipeline combining LLM script generation, synthesized narration and Remotion-based programmatic scene rendering.",
+             "Flask REST APIs orchestrate each stage: script processing, scene composition, audio generation and final render."] }
+  ],
+  skills: [
+    { layer: "networking",    items: ["Cilium", "WireGuard", "Tailscale", "Cloudflare Tunnel", "Computer Networks"] },
+    { layer: "platform",      items: ["Kubernetes", "Docker", "Helm", "Terraform", "Linux", "Git", "GitLab CI", "GitHub Actions"] },
+    { layer: "observability", items: ["Prometheus", "Grafana"] },
+    { layer: "data",          items: ["PostgreSQL", "Redis", "Prisma ORM"] },
+    { layer: "backend",       items: ["Node.js", "Express.js", "NestJS", "Next.js", "REST APIs", "JWT", "WebSockets"] },
+    { layer: "languages",     items: ["Java", "C++", "Python", "JavaScript", "TypeScript"] },
+    { layer: "ai",            items: ["Ollama", "LangChain", "LangGraph", "RAG", "MCP", "Vector DBs"] },
+    { layer: "foundations",   items: ["DSA", "OOP", "DBMS", "Operating Systems"] }
+  ],
+  achievements: [{
+    title: "1st Prize — Surjana Tech Fest (State Level)", year: "2025", note: "Among all polytechnic colleges in Telangana",
+    points: ["Smart Pregnancy Monitoring System: IoT device tracking ECG, heart rate and SpO2, streamed live to hospital dashboards via backend APIs.",
+             "Hand-gesture IoT controller linked to a mobile app: voice output, SMS alerts, emergency SOS and an AI chat assistant over REST."]
+  }]
+};
+
+/* ==========================================================================
+   Helpers
+   ========================================================================== */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $ = (s, r = document) => r.querySelector(s);
+const rnd = (a, b) => a + Math.random() * (b - a);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const pad2 = n => String(n).padStart(2, "0");
+const PS1 = `${DATA.handle}@${DATA.host}:~$`;
+const C = { cyan:"#38e1d0", amber:"#f5b942", green:"#4ee38a", red:"#ff6b6b", blue:"#6ea8ff", grey:"#5b6b7a", ink:"#dbe7f3", dim:"#8094a8" };
+const MONO = '"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace';
+const statusCls = s => s === "Running" ? "run" : (s === "Pending" || s === "Terminating" || s === "ContainerCreating") ? "pend" : s ? (s === "Unknown" ? "unk" : "err") : "unk";
+const statusCol = s => ({ run:C.green, pend:C.amber, err:C.red, unk:C.grey })[statusCls(s)];
+const fmtAge = s => s < 60 ? `${Math.round(s)}s` : s < 3600 ? `${Math.floor(s / 60)}m` : s < 86400 ? `${Math.floor(s / 3600)}h${pad2(Math.floor(s % 3600 / 60))}m` : `${Math.floor(s / 86400)}d`;
+const fmtWhen = iso => { const d = new Date(iso); return isNaN(d) ? "unknown" : d.toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }); };
+const hex2rgba = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
+
+let gid = 0;
+function chart(vals, { color = C.cyan, min, max, fill = true } = {}) {
+  const w = 260, h = 60, pd = 3;
+  if (!vals || vals.length < 2) return `<svg class="ch" viewBox="0 0 ${w} ${h}" aria-hidden="true"></svg>`;
+  const lo = min ?? Math.min(...vals), hi = max ?? Math.max(...vals), rg = (hi - lo) || 1;
+  const x = i => pd + (w - 2 * pd) * i / (vals.length - 1), y = v => h - pd - (h - 2 * pd) * ((v - lo) / rg);
+  const pts = vals.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" "), id = "g" + (gid++);
+  return `<svg class="ch" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".38"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+    ${fill ? `<polygon points="${pd},${h} ${pts} ${w - pd},${h}" fill="url(#${id})"/>` : ""}
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
+}
+
+/* ==========================================================================
+   Data layer: live → replay → simulated
+   ========================================================================== */
+function createMock() {
+  const defs = [  // id, ns, kind, deployment, baseCpu, baseMem
+    ["cloudflared","edge","edge","cloudflared",.06,38], ["gateway","edge","edge","portfolio-gw",.10,64],
+    ["k8s-rca-mcp","projects","project","k8s-rca-mcp",.12,120], ["agentic-support","projects","project","agentic-support",.16,210],
+    ["ginpro-erp","projects","project","ginpro-erp",.09,96], ["ai-video-gen","projects","project","ai-video-gen",.22,380],
+    ["prometheus","monitoring","monitoring","prometheus-server",.14,520], ["grafana","monitoring","monitoring","grafana",.07,160],
+    ["loki","monitoring","monitoring","loki",.10,240]
+  ];
+  const hash = () => Math.random().toString(36).slice(2, 8), suf = () => Math.random().toString(36).slice(2, 7);
+  const now0 = Date.now();
+  const pods = defs.map(([id, ns, kind, dep, cpu, mem]) => ({
+    id, ns, kind, dep, name: `${dep}-${hash()}-${suf()}`, status: "Running", restarts: 0, cpu, cpuBase: cpu, mem, memBase: mem,
+    born: now0 - rnd(4, 45) * 60000, until: 0, cpuSeries: Array.from({ length: 30 }, () => clamp(cpu + rnd(-.04, .04), 0, 1))
+  }));
+  const wts = { "k8s-rca-mcp": .30, "agentic-support": .30, "ginpro-erp": .15, "ai-video-gen": .25 };
+  let t = 0, rps = 9, p95 = 60, burst = 0, logs = [];
+  const rpsAt = i => 9 + 5 * Math.sin(i / 11) + rnd(-1.2, 1.2);
+  const S = { rps: [], p95: [], cpu: [], mem: [] };
+  for (let i = 0; i < 60; i++) { const r = rpsAt(i); S.rps.push(r); S.p95.push(48 + r * 1.7 + rnd(-5, 5)); S.cpu.push(.2 + .05 * Math.sin(i / 9) + rnd(-.02, .02)); S.mem.push(1500 + 40 * Math.sin(i / 14) + rnd(-12, 12)); }
+  const paths = ["", "projects", "experience", "skills", "contact", "healthz"];
+  const gens = {
+    cloudflared: () => `INF GET /${pick(paths)} 200 via ${pick(["bom","maa","hyd"])}`,
+    gateway: () => Math.random() < .08 ? `warn slow upstream ${rand(300, 480)}ms` : `GET /api/${pick(["snapshot","snapshot","health"])} 200 ${rand(2, 14)}ms`,
+    "k8s-rca-mcp": () => `tool=${pick(["get_pod_events","get_logs","describe_pod","get_netpol"])} ok ${rand(8, 90)}ms`,
+    "agentic-support": () => `agent.run session=${suf()} tools=${rand(1, 3)} ${rand(300, 1400)}ms`,
+    "ginpro-erp": () => `sync batch=${rand(3, 40)} records ok`,
+    "ai-video-gen": () => `render scene ${rand(1, 6)}/6 done`,
+    prometheus: () => pick([`msg="Scrape complete" targets=9`, `component=tsdb msg="Head GC completed"`]),
+    grafana: () => `logger=context method=GET path=/api/ds/query status=200`,
+    loki: () => `msg="flushing stream" streams=${rand(2, 9)}`
+  };
+  const rand = (a, b) => Math.floor(rnd(a, b + 1));
+  function addLog(p) { const g = gens[p.id]; if (!g) return; const msg = g(); logs.push({ t: new Date().toISOString(), pod: p.id, level: /^warn/.test(msg) ? "warn" : "info", msg }); if (logs.length > 80) logs.shift(); }
+  function step() {
+    t++; const now = Date.now();
+    const target = 9 + 5 * Math.sin(t / 23) + (burst > 0 ? 10 : 0) + rnd(-1.5, 1.5);
+    if (burst > 0) burst--; else if (Math.random() < .015) burst = 8;
+    rps = clamp(rps * .7 + target * .3, .5, 40); p95 = clamp(48 + rps * 1.7 + rnd(-6, 6), 30, 400);
+    pods.forEach(p => {
+      if (p.until && now >= p.until) {
+        if (p.status === "Terminating") { p.status = "Pending"; p.until = now + 2600; p.name = `${p.dep}-${hash()}-${suf()}`; }
+        else { p.status = "Running"; p.until = 0; p.born = now; p.restarts = 0; }
+      }
+      if (p.status === "Running") {
+        const load = (p.kind === "project" || p.id === "gateway") ? .55 + rps / 16 : 1;
+        p.cpu = clamp(p.cpu * .8 + (p.cpuBase * load + rnd(-.02, .02)) * .2, .01, .95);
+        p.mem = p.memBase + rnd(-3, 3) + (p.kind === "project" ? rps * .8 : 0);
+        if (t % 5 === 0) { p.cpuSeries.push(p.cpu); p.cpuSeries.shift(); }
+        if (Math.random() < .35) addLog(p);
+      } else { p.cpu = 0; p.mem = 0; if (t % 5 === 0) { p.cpuSeries.push(0); p.cpuSeries.shift(); } }
+    });
+    if (t % 5 === 0) {
+      const run = pods.filter(p => p.status === "Running");
+      S.rps.push(rps); S.rps.shift(); S.p95.push(p95); S.p95.shift();
+      S.cpu.push(run.reduce((a, p) => a + p.cpu * .5, 0) / 4.5); S.cpu.shift();
+      S.mem.push(run.reduce((a, p) => a + p.mem, 0)); S.mem.shift();
+    }
+  }
+  function snapshot() {
+    const now = Date.now(), run = pods.filter(p => p.status === "Running");
+    const edges = [["visitor","cloudflared",rps], ["cloudflared","gateway",rps]];
+    Object.keys(wts).forEach(k => edges.push(["gateway", k, rps * wts[k]]));
+    return {
+      mode: "simulated", asOf: new Date().toISOString(), cluster: { name: "microk8s", version: "v1.31", nodes: 1 },
+      pods: pods.map(p => ({ id: p.id, name: p.name, ns: p.ns, kind: p.kind, status: p.status, restarts: p.restarts, cpu: p.cpu, memMi: p.mem, ageSec: (now - p.born) / 1000, cpuSeries: p.cpuSeries.slice() })),
+      edges, totals: { rps, p95ms: p95, cpu: run.reduce((a, p) => a + p.cpu * .5, 0) / 4.5, memMi: run.reduce((a, p) => a + p.mem, 0) },
+      series: { rps: S.rps.slice(), p95: S.p95.slice(), cpu: S.cpu.slice(), mem: S.mem.slice() }, logs: logs.slice(-40)
+    };
+  }
+  function deletePod(id) { const p = pods.find(x => x.id === id); if (!p || p.status !== "Running") return false; p.status = "Terminating"; p.until = Date.now() + 1600; return p.name; }
+  for (let i = 0; i < 25; i++) step();
+  return { step, snapshot, deletePod };
+}
+
+const Source = (function () {
+  const mock = createMock(); let replay = null, liveSnap = null, liveAt = 0, tick = 0, snap = null;
+  const subs = [];
+  const getJSON = async (url, ms = 4000) => { const c = new AbortController(), id = setTimeout(() => c.abort(), ms);
+    try { const r = await fetch(url, { cache: "no-store", signal: c.signal }); if (!r.ok) throw 0; return await r.json(); } finally { clearTimeout(id); } };
+  async function tryLive() { if (!CONFIG.API_URL) return; try { const s = await getJSON(CONFIG.API_URL.replace(/\/$/, "") + "/api/snapshot"); s.mode = "live"; liveSnap = s; liveAt = Date.now(); } catch (e) {} }
+  function compute() {
+    if (liveSnap && Date.now() - liveAt < 20000) return liveSnap;
+    if (replay) return Object.assign({}, replay, { mode: "replay" });
+    mock.step(); return mock.snapshot();
+  }
+  async function loop() {
+    tick++; if (CONFIG.API_URL && tick % CONFIG.POLL_LIVE_EVERY === 1) await tryLive();
+    snap = compute(); subs.forEach(f => f(snap));
+  }
+  async function start() {
+    try { replay = await getJSON(CONFIG.REPLAY_URL, 1500); } catch (e) {}
+    await tryLive(); await loop(); setInterval(loop, 1000);
+  }
+  return { start, subscribe: f => subs.push(f), get snap() { return snap; }, mock, get usingMock() { return snap && snap.mode === "simulated"; } };
+})();
+const podOf = (s, key) => s && s.pods.find(p => p.id === key || p.name === key || p.name.startsWith(key));
+
+/* ==========================================================================
+   Sections / windows
+   ========================================================================== */
+const SECTIONS = [
+  { id:"about",         key:"0", w:520, desc:"who I am",        title:"~/about — cat README.md",       render: renderAbout },
+  { id:"experience",    key:"1", w:620, desc:"git log",         title:"~/experience — git log",        render: renderExperience },
+  { id:"projects",      key:"2", w:680, desc:"live pods",       title:"~/projects — kubectl get pods", render: renderProjects, update: updateProjects },
+  { id:"observability", key:"3", w:700, desc:"metrics & logs",  title:"~/observability — prometheus",  render: renderObs, update: updateObs },
+  { id:"skills",        key:"4", w:580, desc:"the stack",       title:"~/skills — ip addr show",       render: renderSkills },
+  { id:"terminal",      key:"5", w:600, desc:"poke the cluster",title:"ssh vishal@noc",                render: renderTerminalShell, init: initTerminal },
+  { id:"contact",       key:"6", w:470, desc:"say hello",       title:"~/contact — ping",              render: renderContact }
+];
+const byId = Object.fromEntries(SECTIONS.map(s => [s.id, s]));
+
+function renderAbout() {
+  return `<p class="prompt">cat README.md</p><h2>hello, packet.</h2><p>${esc(DATA.about)}</p>
+    <h3>education</h3>
+    ${DATA.education.map(e => `<div class="entry"><div class="entry-h"><strong>${esc(e.school)}</strong><span class="dim">${esc(e.years)}</span></div><div class="dim">${esc(e.detail)} · ${esc(e.place)}</div></div>`).join("")}
+    <h3>achievements</h3>
+    ${DATA.achievements.map(a => `<div class="entry"><div class="entry-h"><strong>${esc(a.title)}</strong><span class="dim">${esc(a.year)}</span></div><div class="dim">${esc(a.note)}</div><ul>${a.points.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>`).join("")}`;
+}
+function renderExperience() {
+  return `<p class="prompt">git log --stat career/</p>` + DATA.experience.map(x => `<article class="entry"><div class="entry-h"><strong>${esc(x.role)}</strong><span class="dim">${esc(x.period)}</span></div>
+    <div class="dim">${esc(x.org)} · ${esc(x.place)}</div><ul>${x.bullets.map(b => `<li>${esc(b)}</li>`).join("")}</ul></article>`).join("");
+}
+function renderProjects() {
+  return `<p class="prompt">kubectl get pods -n projects</p>
+    <div class="thead"><span>NAME</span><span>STATUS</span><span>STACK</span></div>
+    ${DATA.projects.map(p => `<details class="proj" data-name="${esc(p.name)}"><summary>
+      <span class="pname">${esc(p.name)}</span><span><span class="pill unk" data-st="${esc(p.name)}">Unknown</span></span><span class="stk">${esc(p.stack)}</span></summary>
+      <div class="detail"><strong>${esc(p.title)}</strong><ul>${p.desc.map(d => `<li>${esc(d)}</li>`).join("")}</ul>
+        <div class="live" data-pod="${esc(p.name)}">
+          <div class="stats"><span>pod <b data-f="pod">—</b></span><span>cpu <b data-f="cpu">—</b></span><span>mem <b data-f="mem">—</b></span><span>restarts <b data-f="rs">—</b></span><span>age <b data-f="age">—</b></span></div>
+          <div data-f="spark"></div><div class="logtail" data-f="logs"></div></div>
+        ${(p.repo || p.demo) ? `<div class="links">${p.demo ? `<a href="${esc(p.demo)}" target="_blank" rel="noopener">live demo ↗</a>` : ""}${p.repo ? `<a href="${esc(p.repo)}" target="_blank" rel="noopener">source ↗</a>` : ""}</div>` : ""}
+      </div></details>`).join("")}
+    <p class="dim" style="margin-top:12px;font-size:12px">expand a row for live pod stats and logs</p>`;
+}
+function updateProjects(body, s) {
+  body.querySelectorAll("[data-st]").forEach(el => { const p = podOf(s, el.dataset.st); const st = p ? p.status : "Unknown"; el.textContent = st; el.className = "pill " + statusCls(st); });
+  body.querySelectorAll(".live").forEach(el => {
+    const p = podOf(s, el.dataset.pod), f = k => el.querySelector(`[data-f="${k}"]`); if (!p) return;
+    f("pod").textContent = p.name; f("cpu").textContent = Math.round(p.cpu * 100) + "%"; f("mem").textContent = Math.round(p.memMi) + " Mi";
+    f("rs").textContent = p.restarts; f("age").textContent = fmtAge(p.ageSec);
+    f("spark").innerHTML = chart(p.cpuSeries, { color: C.cyan, min: 0, max: 1 });
+    f("logs").textContent = (s.logs || []).filter(l => l.pod === p.id).slice(-4).map(l => `${l.t.slice(11, 19)} ${l.msg}`).join("\n") || "no recent logs";
+  });
+}
+const PANELS = [
+  { k:"rps", label:"requests / s",  col:C.cyan,  fmt: v => v.toFixed(1) },
+  { k:"p95", label:"p95 latency",   col:C.amber, fmt: v => Math.round(v) + " ms" },
+  { k:"cpu", label:"cluster cpu",   col:C.green, fmt: v => Math.round(v * 100) + "%" },
+  { k:"mem", label:"memory",        col:C.blue,  fmt: v => Math.round(v) + " Mi" }
+];
+function renderObs() {
+  return `<p class="prompt">promtool query range --since 5m</p><div class="note" data-f="note">waiting for data…</div>
+    <div class="panels">${PANELS.map(p => `<div class="panel" data-p="${p.k}"><div class="tl">${p.label}</div><div class="pv">—</div><div class="pc"></div></div>`).join("")}</div>
+    <h3>log stream (loki)</h3><div class="lg" data-f="logs"></div>
+    <div class="links">${CONFIG.GRAFANA_URL ? `<a href="${esc(CONFIG.GRAFANA_URL)}" target="_blank" rel="noopener">open Grafana ↗</a>` : `<span class="dim">Grafana link: set CONFIG.GRAFANA_URL</span>`}</div>`;
+}
+function updateObs(body, s) {
+  const notes = {
+    live: "Live from Prometheus and Loki through the read-only portfolio gateway.",
+    replay: `Recorded on ${fmtWhen(s.asOf)}. The cluster is asleep. Values are real, just not current.`,
+    simulated: "Simulated data. The real cluster is offline. This view switches to live automatically when it's up."
+  };
+  $('[data-f="note"]', body).textContent = notes[s.mode] || "";
+  PANELS.forEach(p => { const el = $(`[data-p="${p.k}"]`, body), v = s.series && s.series[p.k]; if (!v) return;
+    $(".pv", el).textContent = p.fmt(v[v.length - 1]); $(".pc", el).innerHTML = chart(v, { color: p.col, min: p.k === "cpu" ? 0 : undefined }); });
+  $('[data-f="logs"]', body).innerHTML = (s.logs || []).slice(-9).reverse().map(l => `<div class="${l.level === "warn" ? "w" : ""}">${esc(l.t.slice(11, 19))} <b>${esc(l.pod)}</b> ${esc(l.msg)}</div>`).join("");
+}
+function renderSkills() {
+  return `<p class="prompt">ip addr show</p>` + DATA.skills.map((s, i) => `<div class="layer"><div class="ln"><b>${pad2(i + 1)}</b>${esc(s.layer)}</div>
+    <div class="chips">${s.items.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div></div>`).join("");
+}
+function renderContact() {
+  const li = DATA.linkedin.replace(/^https?:\/\/(www\.)?/, ""), gh = DATA.github.replace(/^https?:\/\//, "");
+  return `<p class="prompt">ping ${esc(DATA.handle)}</p><h2>open a connection</h2><p>Reachable at the usual ports. Email is fastest.</p>
+    <dl class="kv"><dt>email</dt><dd><a href="mailto:${esc(DATA.email)}">${esc(DATA.email)}</a></dd>
+    <dt>linkedin</dt><dd><a href="${esc(DATA.linkedin)}" target="_blank" rel="noopener">${esc(li)}</a></dd>
+    <dt>github</dt><dd><a href="${esc(DATA.github)}" target="_blank" rel="noopener">${esc(gh)}</a></dd>
+    <dt>résumé</dt><dd><a href="${esc(DATA.resume)}" target="_blank" rel="noopener">${esc(DATA.resume)}</a></dd></dl>`;
+}
+function renderTerminalShell() {
+  return `<div class="term"><div class="t-out" role="log" aria-live="polite"></div>
+    <form class="t-form"><label for="tin">${esc(PS1)}</label><input id="tin" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="terminal input"></form></div>`;
+}
+
+/* ---------- terminal ---------- */
+function initTerminal(body) {
+  const out = $(".t-out", body), form = $("form", body), input = $("input", body), hist = []; let hi = 0;
+  const line = (t = "", cls = "") => { const d = document.createElement("div"); d.className = "t-line " + cls; d.textContent = t; out.appendChild(d); out.scrollTop = out.scrollHeight; };
+  const snap = () => Source.snap;
+  const T = Object.create(null);
+  T.help = () => ["whoami              who is this", "ls                  list sections", "open <section>      open a window",
+    "kubectl get pods    pods in the cluster (add -A for all namespaces)", "kubectl top pods    cpu / memory", "kubectl logs <pod>  recent logs",
+    "kubectl delete pod <pod>   watch a pod self-heal (demo mode only)", "cluster             cluster status + data source", "snapshot            download current data as replay.json",
+    "skills  contact  neofetch  traceroute  ping <host>  clear  exit"].forEach(l => line(l));
+  T.whoami = () => line(`${DATA.name} — ${DATA.role}`);
+  T.ls = () => line(SECTIONS.map(s => s.id + "/").join("  "));
+  T.open = T.cat = a => byId[a[0]] ? (openWin(a[0]), line(`opening ${a[0]}…`, "ok")) : line(`${a[0] || "?"}: no such section (try ls)`, "err");
+  T.skills = () => DATA.skills.forEach(s => line(s.layer.padEnd(14) + s.items.join(", ")));
+  T.contact = () => { line(`email     ${DATA.email}`); line(`github    ${DATA.github}`); line(`linkedin  ${DATA.linkedin}`); };
+  T.clear = () => { out.textContent = ""; }; T.exit = () => closeWin("terminal");
+  T.sudo = () => line(`${DATA.handle} is not in the sudoers file. This incident will be reported.`, "err");
+  T.cluster = () => { const s = snap(); if (!s) return line("no data yet", "err");
+    line(`source     ${s.mode}${s.mode === "simulated" ? "  (cluster offline, demo data)" : s.mode === "replay" ? "  (cluster asleep)" : ""}`);
+    line(`cluster    ${s.cluster.name} ${s.cluster.version}, ${s.cluster.nodes} node`); line(`as of      ${fmtWhen(s.asOf)}`);
+    line(`pods       ${s.pods.filter(p => p.status === "Running").length}/${s.pods.length} running · ${s.totals.rps.toFixed(1)} req/s · p95 ${Math.round(s.totals.p95ms)} ms`); };
+  T.kubectl = a => {
+    const s = snap(); if (!s) return line("no data yet", "err");
+    const all = a.includes("-A") || a.includes("--all-namespaces");
+    if (a[0] === "get" && /^pods?$/.test(a[1] || "")) {
+      line((all ? "NAMESPACE   " : "") + "NAME".padEnd(34) + "STATUS".padEnd(13) + "RESTARTS  AGE", "dim");
+      s.pods.filter(p => all || p.ns === "projects").forEach(p => line((all ? p.ns.padEnd(12) : "") + p.name.padEnd(34) + p.status.padEnd(13) + String(p.restarts).padEnd(10) + fmtAge(p.ageSec)));
+    } else if (a[0] === "top") {
+      line("NAME".padEnd(34) + "CPU    MEMORY", "dim"); s.pods.forEach(p => line(p.name.padEnd(34) + (Math.round(p.cpu * 100) + "%").padEnd(7) + Math.round(p.memMi) + "Mi"));
+    } else if (a[0] === "logs" && a[1]) {
+      const p = podOf(s, a[1]); if (!p) return line(`Error: pod "${a[1]}" not found`, "err");
+      const ls = (s.logs || []).filter(l => l.pod === p.id).slice(-8); if (!ls.length) line("(no recent logs)", "dim"); ls.forEach(l => line(`${l.t.slice(11, 19)} ${l.msg}`));
+    } else if (a[0] === "delete" && a[1] === "pod" && a[2]) {
+      if (!Source.usingMock) return line(`Error from server (Forbidden): pods "${a[2]}" is forbidden: this gateway is read-only`, "err");
+      const p = podOf(s, a[2]); const n = p && Source.mock.deletePod(p.id);
+      n ? line(`pod "${n}" deleted. Watch the map and tiles: the deployment recreates it.`, "ok") : line(`Error: pod "${a[2]}" not found or not running`, "err");
+    } else line("usage: kubectl get pods [-A] | top pods | logs <pod> | delete pod <pod>", "err");
+  };
+  T.snapshot = () => { const s = snap(); if (!s) return line("no data yet", "err");
+    const blob = new Blob([JSON.stringify(Object.assign({}, s, { mode: "replay" }), null, 1)], { type: "application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "replay.json"; a.click(); line("saved replay.json (put it next to index.html)", "ok"); };
+  T.neofetch = () => { const s = snap();
+    ["" + DATA.handle + "@" + DATA.host, "-----------------", `role     ${DATA.role}`, "focus    kubernetes · networking · devops",
+     `cluster  ${s ? s.cluster.name + " " + s.cluster.version : "—"}`, "ingress  Cloudflare Tunnel (outbound only)", `data     ${s ? s.mode : "—"}`, `session  ${$("#up").textContent}`].forEach(l => line(l)); };
+  T.traceroute = () => { const p = Source.snap && Source.snap.pods.find(x => x.kind === "project");
+    line(`traceroute to ${DATA.handle}.dev, 4 hops max`, "dim");
+    [["cloudflared", "edge"], ["gateway", "edge"], [p ? p.id : "project", "projects"], ["prometheus", "monitoring"]].forEach((h, i) => line(` ${i + 1}  ${(h[0] + " (" + h[1] + ")").padEnd(30)}${(0.6 + i * 0.9).toFixed(1)} ms`)); };
+  T.ping = a => { const h = a[0]; if (!h) return line("usage: ping <host>", "err"); line(`PING ${h}: 56 data bytes`, "dim"); let i = 0; const ms = [];
+    (function tk() { if (i === 4) { line(`--- ${h} ping statistics ---`, "dim"); line(`4 packets transmitted, 4 received, 0% packet loss, avg ${(ms.reduce((x, y) => x + y) / 4).toFixed(1)} ms`); return; }
+      const t = 8 + Math.random() * 6; ms.push(t); line(`64 bytes from ${h}: icmp_seq=${i} ttl=58 time=${t.toFixed(1)} ms`); i++; setTimeout(tk, 350); })(); };
+
+  line('connected to noc. type "help" for commands.', "dim");
+  form.addEventListener("submit", e => {
+    e.preventDefault(); const v = input.value.trim(); input.value = ""; line(`${PS1} ${v}`, "cmd"); if (!v) return;
+    hist.push(v); hi = hist.length; const [c, ...args] = v.split(/\s+/);
+    if (T[c]) T[c](args); else line(`${c}: command not found — try "help"`, "err");
+  });
+  input.addEventListener("keydown", e => {
+    if (e.key === "ArrowUp" && hist.length) { e.preventDefault(); hi = Math.max(0, hi - 1); input.value = hist[hi]; }
+    else if (e.key === "ArrowDown") { e.preventDefault(); hi = Math.min(hist.length, hi + 1); input.value = hist[hi] || ""; }
+    else if (e.key === "l" && e.ctrlKey) { e.preventDefault(); T.clear(); }
+  });
+  body.addEventListener("click", () => { if (!String(getSelection())) input.focus(); });
+  setTimeout(() => input.focus(), 30);
+}
+
+/* ---------- window manager ---------- */
+const desk = $("#desk"), mobile = matchMedia("(max-width:860px)"), wins = new Map(); let zTop = 10;
+function openWin(id, opts = {}) {
+  const s = byId[id]; if (!s) return;
+  if (wins.has(id)) { focusWin(id); if (opts.focus) focusProject(wins.get(id), opts.focus); return; }
+  const el = document.createElement("section");
+  el.className = "win"; el.setAttribute("role", "dialog"); el.setAttribute("aria-label", s.id);
+  el.style.width = `min(${s.w}px, calc(100% - 24px))`;
+  el.innerHTML = `<header class="win-bar"><span class="win-title"><i>●</i> ${esc(s.title)}</span><button class="win-close" aria-label="Close ${esc(s.id)}">✕</button></header><div class="win-body">${s.render()}</div>`;
+  desk.appendChild(el); wins.set(id, el);
+  if (!mobile.matches) {
+    const n = wins.size - 1, dw = desk.clientWidth, dh = desk.clientHeight;
+    el.style.left = Math.max(12, Math.min(dw * 0.34 + n * 30, dw - el.offsetWidth - 12)) + "px";
+    el.style.top = Math.max(12, Math.min(24 + n * 30, dh - el.offsetHeight - 12)) + "px";
+  }
+  $(".win-close", el).addEventListener("click", () => closeWin(id));
+  el.addEventListener("pointerdown", () => focusWin(id));
+  el.addEventListener("keydown", e => { if (e.key === "Escape") closeWin(id); });
+  enableDrag(el, $(".win-bar", el));
+  const body = $(".win-body", el);
+  if (s.init) s.init(body);
+  if (s.update && Source.snap) s.update(body, Source.snap);
+  if (opts.focus) focusProject(el, opts.focus);
+  focusWin(id);
+}
+function focusProject(el, name) { const d = el.querySelector(`.proj[data-name="${CSS.escape(name)}"]`); if (d) { d.open = true; d.scrollIntoView({ block: "nearest" }); } }
+function closeWin(id) {
+  const el = wins.get(id); if (!el) return; el.remove(); wins.delete(id);
+  const last = [...wins.entries()].sort((a, b) => b[1].style.zIndex - a[1].style.zIndex)[0];
+  if (last) focusWin(last[0]); else syncUI(null);
+}
+function focusWin(id) { const el = wins.get(id); if (!el) return; el.style.zIndex = ++zTop; syncUI(id); }
+function syncUI(focused) {
+  wins.forEach((el, id) => el.classList.toggle("focused", id === focused));
+  document.querySelectorAll(".tm").forEach(b => { const id = b.dataset.id;
+    b.classList.toggle("open", wins.has(id)); b.classList.toggle("focused", id === focused);
+    $(".fl", b).textContent = id === focused ? "*" : wins.has(id) ? "·" : ""; });
+}
+function enableDrag(el, bar) {
+  bar.addEventListener("pointerdown", e => {
+    if (mobile.matches || e.target.closest("button")) return;
+    const r = el.getBoundingClientRect(), d = desk.getBoundingClientRect(), ox = e.clientX - r.left, oy = e.clientY - r.top;
+    bar.setPointerCapture(e.pointerId);
+    const move = ev => { el.style.left = Math.max(80 - r.width, Math.min(ev.clientX - d.left - ox, d.width - 80)) + "px"; el.style.top = Math.max(0, Math.min(ev.clientY - d.top - oy, d.height - 40)) + "px"; };
+    const up = () => { bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", up); };
+    bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", up);
+  });
+}
+
+/* ==========================================================================
+   Cluster scene (canvas): real pods, real traffic
+   ========================================================================== */
+const SCENE = {
+  ns: [ { id:"edge", x0:.12, y0:.19, x1:.43, y1:.61 }, { id:"projects", x0:.52, y0:.05, x1:.99, y1:.65 }, { id:"monitoring", x0:.27, y0:.74, x1:.99, y1:.99 } ],
+  nodes: {
+    visitor:         { x:.04, y:.40, short:"you", label:"visitor", decor:true },
+    cloudflared:     { x:.19, y:.40, short:"CF", label:"cloudflared", tip:"Cloudflare Tunnel: outbound-only connector, no open ports" },
+    gateway:         { x:.35, y:.40, short:"GW", label:"gateway", tip:"read-only API and router", open:"about" },
+    "k8s-rca-mcp":   { x:.64, y:.22, short:"RC", label:"k8s-rca-mcp", open:"projects" },
+    "agentic-support":{ x:.88, y:.22, short:"AG", label:"agentic-support", open:"projects" },
+    "ginpro-erp":    { x:.64, y:.49, short:"GN", label:"ginpro-erp", open:"projects" },
+    "ai-video-gen":  { x:.88, y:.49, short:"VG", label:"ai-video-gen", open:"projects" },
+    prometheus:      { x:.42, y:.87, short:"PR", label:"prometheus", tip:"scrapes every pod", open:"observability" },
+    grafana:         { x:.65, y:.87, short:"GF", label:"grafana", tip:"dashboards", open:"observability" },
+    loki:            { x:.88, y:.87, short:"LK", label:"loki", tip:"log aggregation", open:"observability" }
+  },
+  edges: [
+    ["visitor","cloudflared","flow",0], ["cloudflared","gateway","flow",0],
+    ["gateway","k8s-rca-mcp","flow",-.1], ["gateway","agentic-support","flow",-.06], ["gateway","ginpro-erp","flow",.1], ["gateway","ai-video-gen","flow",-.17],
+    ["prometheus","gateway","scrape",.18], ["prometheus","ginpro-erp","scrape",.06], ["prometheus","k8s-rca-mcp","scrape",.12],
+    ["grafana","prometheus","query",0], ["loki","ai-video-gen","scrape",-.05]
+  ]
+};
+const Scene = (function () {
+  const cv = $("#scene"), ctx = cv.getContext("2d"), stage = $("#stage"), tip = $("#tip");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ids = Object.keys(SCENE.nodes), rt = {}, acc = SCENE.edges.map(() => 0);
+  const t0 = performance.now(); ids.forEach((id, i) => rt[id] = { i, born: null, hov: 0, pulse: 0 });
+  let W = 0, H = 0, L = null, snap = null, pods = {}, parts = [], hover = null, last = t0;
+
+  function resize() {
+    if (mobile.matches) return;
+    const dpr = Math.min(2, devicePixelRatio || 1); W = stage.clientWidth; H = stage.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const sx = W * .40, sw = W * .60 - 26, sy = 44, sh = H - 84, n = {};
+    ids.forEach(id => n[id] = { x: sx + SCENE.nodes[id].x * sw, y: sy + SCENE.nodes[id].y * sh });
+    const ns = SCENE.ns.map(o => ({ id: o.id, x: sx + o.x0 * sw, y: sy + o.y0 * sh, w: (o.x1 - o.x0) * sw, h: (o.y1 - o.y0) * sh }));
+    const edges = SCENE.edges.map(([a, b, kind, cur]) => { const A = n[a], B = n[b], dx = B.x - A.x, dy = B.y - A.y, d = Math.hypot(dx, dy) || 1;
+      return { a, b, kind, A, B, c: { x: (A.x + B.x) / 2 - dy / d * cur * d, y: (A.y + B.y) / 2 + dx / d * cur * d } }; });
+    L = { n, ns, edges, r: clamp(sw * .032, 13, 24) };
+    if (reduce) draw(performance.now());
+  }
+  const bez = (e, t) => { const u = 1 - t; return { x: u * u * e.A.x + 2 * u * t * e.c.x + t * t * e.B.x, y: u * u * e.A.y + 2 * u * t * e.c.y + t * t * e.B.y }; };
+  function setSnap(s) { snap = s; pods = {}; s.pods.forEach(p => pods[p.id] = p); if (reduce) draw(performance.now()); }
+  const edgeRps = e => { if (!snap || !snap.edges) return 0; const m = snap.edges.find(x => x[0] === e.a && x[1] === e.b); return m ? m[2] : 0; };
+  const status = id => SCENE.nodes[id].decor ? "Running" : pods[id] ? pods[id].status : "Unknown";
+
+  function step(dt) {
+    if (!L || !snap) return;
+    L.edges.forEach((e, i) => {
+      let rate = e.kind === "flow" ? Math.min(14, edgeRps(e) * .45) : .28;
+      if (status(e.b) !== "Running" || status(e.a) !== "Running") rate = 0;
+      acc[i] += rate * dt;
+      while (acc[i] >= 1) { acc[i] -= 1; if (parts.length < 260) parts.push({ i, t: 0, dur: (e.kind === "flow" ? 1.2 : 2.6) * rnd(.85, 1.3) }); }
+    });
+    parts = parts.filter(p => { p.t += dt / p.dur; if (p.t >= 1) { rt[L.edges[p.i].b].pulse = 1; return false; } return true; });
+    ids.forEach(id => { const r = rt[id]; r.pulse = Math.max(0, r.pulse - dt * 2.2); const target = hover === id ? 1 : 0; r.hov += (target - r.hov) * Math.min(1, dt * 12); });
+  }
+  function draw(now) {
+    if (!L) return; ctx.clearRect(0, 0, W, H);
+    ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    L.ns.forEach(o => { ctx.beginPath(); ctx.roundRect(o.x, o.y, o.w, o.h, 16); ctx.fillStyle = "rgba(160,200,230,.025)"; ctx.fill();
+      ctx.setLineDash([5, 6]); ctx.lineWidth = 1; ctx.strokeStyle = "rgba(160,200,230,.16)"; ctx.stroke(); ctx.setLineDash([]);
+      ctx.font = `11px ${MONO}`; ctx.fillStyle = "rgba(128,148,168,.8)"; ctx.fillText("namespace/" + o.id, o.x + 12, o.y + 18); });
+    L.edges.forEach(e => { ctx.beginPath(); ctx.moveTo(e.A.x, e.A.y); ctx.quadraticCurveTo(e.c.x, e.c.y, e.B.x, e.B.y);
+      ctx.lineWidth = 1.2; ctx.setLineDash(e.kind === "flow" ? [] : [3, 6]); ctx.strokeStyle = e.kind === "flow" ? "rgba(56,225,208,.2)" : "rgba(245,185,66,.14)"; ctx.stroke(); ctx.setLineDash([]); });
+    ctx.globalCompositeOperation = "lighter"; ctx.lineCap = "round";
+    parts.forEach(p => { const e = L.edges[p.i], a = bez(e, Math.max(0, p.t - .07)), b = bez(e, p.t), col = e.kind === "flow" ? C.cyan : C.amber;
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineWidth = 6; ctx.strokeStyle = hex2rgba(col, .12); ctx.stroke();
+      ctx.lineWidth = 2; ctx.strokeStyle = hex2rgba(col, .95); ctx.stroke(); });
+    ctx.globalCompositeOperation = "source-over";
+    ids.forEach(id => node(id, now));
+  }
+  function node(id, now) {
+    const def = SCENE.nodes[id], p = L.n[id], k = rt[id]; if (k.born === null) k.born = now + 250 + k.i * 120; const a = clamp((now - k.born) / 450, 0, 1); if (a <= 0) return;
+    const ez = 1 - Math.pow(1 - a, 3), pod = pods[id], st = status(id); let col = statusCol(st);
+    const r = L.r * (.6 + .4 * ez) * (1 + .14 * k.hov); let al = ez;
+    if (statusCls(st) === "pend") al *= .55 + .45 * Math.sin(now / 160);
+    ctx.globalAlpha = clamp(al, 0, 1);
+    const g = ctx.createRadialGradient(p.x, p.y, r * .5, p.x, p.y, r * 2.9); g.addColorStop(0, hex2rgba(col, .30)); g.addColorStop(1, hex2rgba(col, 0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, r * 2.9, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 7); ctx.fillStyle = "#0b131b"; ctx.fill(); ctx.lineWidth = 1.7; ctx.strokeStyle = col; ctx.stroke();
+    if (pod && st === "Running") { ctx.beginPath(); ctx.arc(p.x, p.y, r + 4.5, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * clamp(pod.cpu, .03, 1));
+      ctx.lineWidth = 3; ctx.lineCap = "round"; ctx.strokeStyle = hex2rgba(pod.cpu > .8 ? C.amber : C.cyan, .9); ctx.stroke(); }
+    if (k.pulse > .02) { ctx.beginPath(); ctx.arc(p.x, p.y, r + 4 + (1 - k.pulse) * 14, 0, 7); ctx.lineWidth = 1.5; ctx.strokeStyle = hex2rgba(col, k.pulse * .55); ctx.stroke(); }
+    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = C.ink; ctx.font = `600 ${Math.round(r * .62)}px ${MONO}`; ctx.fillText(def.short, p.x, p.y + 1);
+    ctx.textBaseline = "alphabetic"; ctx.font = `11px ${MONO}`; ctx.fillStyle = hover === id ? C.ink : C.dim; ctx.fillText(def.label, p.x, p.y + r + 20);
+    ctx.globalAlpha = 1;
+  }
+  function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    if (!mobile.matches) { step(dt); draw(now); } requestAnimationFrame(frame);
+  }
+  const hit = (x, y) => { if (!L) return null; for (const id of ids) { if (SCENE.nodes[id].decor) continue; const p = L.n[id]; if (Math.hypot(x - p.x, y - p.y) <= L.r + 8) return id; } return null; };
+  cv.addEventListener("pointermove", e => {
+    const id = hit(e.offsetX, e.offsetY); hover = id; cv.style.cursor = id && SCENE.nodes[id].open ? "pointer" : "default";
+    if (!id) { tip.style.display = "none"; return; }
+    const def = SCENE.nodes[id], pod = pods[id];
+    tip.innerHTML = `<b>${esc(pod ? pod.name : id)}</b><br>` + (pod ? `${esc(pod.ns)} · ${esc(pod.status)} · cpu ${Math.round(pod.cpu * 100)}% · mem ${Math.round(pod.memMi)} Mi<br>restarts ${pod.restarts} · age ${fmtAge(pod.ageSec)}` : "no data") +
+      (def.tip ? `<br><span class="dim">${esc(def.tip)}</span>` : "") + (def.open ? `<br><span class="cta">click → ${esc(def.open)}</span>` : "");
+    tip.style.display = "block"; tip.style.left = Math.min(W - tip.offsetWidth - 8, e.offsetX + 16) + "px"; tip.style.top = Math.max(8, Math.min(H - tip.offsetHeight - 8, e.offsetY + 14)) + "px";
+    if (reduce) draw(performance.now());
+  });
+  cv.addEventListener("pointerleave", () => { hover = null; tip.style.display = "none"; });
+  cv.addEventListener("click", e => { const id = hit(e.offsetX, e.offsetY); if (id && SCENE.nodes[id].open) openWin(SCENE.nodes[id].open, DATA.projects.some(p => p.name === id) ? { focus: id } : {}); });
+  new ResizeObserver(resize).observe(stage); resize(); requestAnimationFrame(frame);
+  return { setSnap };
+})();
+
+/* ==========================================================================
+   Chrome: hero tiles, tmux bar, clocks, shortcuts
+   ========================================================================== */
+$("#lede").textContent = DATA.lede;
+$("#tmux").innerHTML = `<span class="tm-sess">[portfolio]</span>` +
+  SECTIONS.map(s => `<button class="tm" data-id="${s.id}" aria-label="Open ${s.id}">${s.key}:${s.id}<span class="fl"></span></button>`).join("") + `<span class="tm-r" id="clock"></span>`;
+$("#svcList").innerHTML = SECTIONS.map(s => `<button class="svc" data-open="${s.id}"><b>${s.id}</b><span>${s.desc}</span></button>`).join("");
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-open],.tm"); if (!t) return; const id = t.dataset.open || t.dataset.id;
+  if (t.classList.contains("tm") && t.classList.contains("focused")) closeWin(id); else openWin(id);
+});
+document.addEventListener("keydown", e => {
+  if (e.target.closest("input,textarea") || e.ctrlKey || e.metaKey || e.altKey) return;
+  const s = SECTIONS.find(x => x.key === e.key); if (s) openWin(s.id);
+});
+
+function paintHero(s) {
+  const m = $("#mode"), label = { live: "live", replay: "replay", simulated: "simulated" }[s.mode] || s.mode;
+  m.className = "mode " + (s.mode === "live" ? "live" : s.mode === "replay" ? "replay" : "sim");
+  m.innerHTML = `<i></i>${label} <span>${s.mode === "live" ? esc(s.cluster.name + " " + s.cluster.version) : s.mode === "replay" ? "cluster asleep · recorded " + esc(fmtWhen(s.asOf)) : "cluster offline · demo data"}</span>`;
+  const run = s.pods.filter(p => p.status === "Running").length, T = s.totals, se = s.series || {};
+  $("#cl").textContent = `${s.cluster.name} ${s.cluster.version}`; $("#tp").textContent = `${run}/${s.pods.length} running`;
+  $("#tv-pods").innerHTML = `${run}<small>/${s.pods.length}</small>`;
+  $("#tsp-pods").innerHTML = s.pods.map(p => `<i class="pd ${statusCls(p.status)}" title="${esc(p.name)}: ${esc(p.status)}"></i>`).join("");
+  $("#tv-rps").innerHTML = `${T.rps.toFixed(1)}`; $("#tv-p95").innerHTML = `${Math.round(T.p95ms)}<small>ms</small>`; $("#tv-cpu").innerHTML = `${Math.round(T.cpu * 100)}<small>%</small>`;
+  $("#tsp-rps").innerHTML = chart(se.rps, { color: C.cyan }); $("#tsp-p95").innerHTML = chart(se.p95, { color: C.amber }); $("#tsp-cpu").innerHTML = chart(se.cpu, { color: C.green, min: 0 });
+}
+Source.subscribe(s => {
+  paintHero(s); Scene.setSnap(s);
+  wins.forEach((el, id) => { const sec = byId[id]; if (sec.update) sec.update($(".win-body", el), s); });
+});
+
+const t0 = Date.now();
+function clocks() {
+  const s = Math.floor((Date.now() - t0) / 1000); $("#up").textContent = `${pad2(Math.floor(s / 60))}:${pad2(s % 60)}`;
+  $("#clock").textContent = `"${DATA.handle}@${DATA.host}"  ${new Date().toTimeString().slice(0, 5)}  ${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}`;
+}
+clocks(); setInterval(clocks, 1000);
+Source.start();
+</script>
+</body>
+</html>
