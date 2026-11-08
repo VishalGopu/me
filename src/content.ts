@@ -29,7 +29,7 @@ export const units: {
 
 export const hero = {
   command: 'whoami',
-  tagline: 'DevOps and platform engineer. I build and operate Kubernetes infrastructure.',
+  tagline: 'I run multi-tenant Kubernetes labs for 127+ learners.',
   sub: 'Kubernetes · Networking · Platform engineering',
   tag: ['GV-0001', 'Software Engineering Intern · Cyberparadigm'],
   stats: [
