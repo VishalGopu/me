@@ -16,6 +16,8 @@ function Screws() {
 export default function Rack() {
   const open = useStore((s) => s.open)
   const setOpen = useStore((s) => s.setOpen)
+  const unplugged = useStore((s) => s.unplugged)
+  const toggleCable = useStore((s) => s.toggleCable)
 
   return (
     <div className="rack-wrap">
@@ -35,7 +37,7 @@ export default function Rack() {
           <span className="hw">
             <span className="ports sw">
               {CABLES.map((c, i) => (
-                <i key={i} className={`rj link ${c}`} />
+                <i key={i} className={`rj ${unplugged.includes(i) ? '' : `link ${c}`}`} />
               ))}
             </span>
           </span>
@@ -79,17 +81,36 @@ export default function Rack() {
           </span>
         </div>
 
-        <svg className="cables" viewBox="0 0 470 644" aria-hidden="true">
+        <svg className="cables" viewBox="0 0 470 644">
           {CABLES.map((c, i) => {
             const x = 256 + 19 * i
             const ty = 14 + i * 2.2
             const out = 478 + i * 7
+            const off = unplugged.includes(i)
+            const startY = off ? 118 + (i % 3) * 8 : 72
+            const route = `V 38 Q ${x} ${ty} ${x + 14} ${ty} H ${out - 12} Q ${out} ${ty} ${out} ${ty + 22} V 590 q 0 16 -9 24`
+            const toggle = () => toggleCable(i)
             return (
-              <path
+              <g
                 key={i}
-                className={`cable ${c}`}
-                d={`M${x} 72 V 38 Q ${x} ${ty} ${x + 14} ${ty} H ${out - 12} Q ${out} ${ty} ${out} ${ty + 22} V 590 q 0 16 -9 24`}
-              />
+                className={`cable-g ${off ? 'off' : ''}`}
+                role="button"
+                tabIndex={0}
+                aria-pressed={!off}
+                aria-label={`Patch cable ${i + 1}, ${c}. ${off ? 'Unplugged. Press to plug in.' : 'Plugged in. Press to unplug.'}`}
+                onClick={toggle}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    toggle()
+                  }
+                }}
+                style={{ transformOrigin: `${x}px 38px`, transformBox: 'view-box' }}
+              >
+                <path className="hit" d={`M${x} ${startY} ${route}`} />
+                <path className={`cable ${c}`} d={`M${x} ${startY} ${route}`} />
+                <rect className={`plug ${c}`} x={x - 6} y={startY - 4} width="12" height="10" rx="2" />
+              </g>
             )
           })}
         </svg>

@@ -12,6 +12,8 @@ const initialTone: Tone =
 interface State {
   open: UnitKey | null
   tone: Tone
+  unplugged: number[]
+  toggleCable: (i: number) => void
   setOpen: (key: UnitKey | null) => void
   setTone: (tone: Tone) => void
 }
@@ -19,6 +21,11 @@ interface State {
 export const useStore = create<State>((set, get) => ({
   open: initialOpen,
   tone: initialTone,
+  unplugged: [],
+  toggleCable: (i) =>
+    set((st) => ({
+      unplugged: st.unplugged.includes(i) ? st.unplugged.filter((x) => x !== i) : [...st.unplugged, i],
+    })),
   setOpen: (key) => {
     if (key && !get().open) trigger = document.activeElement as HTMLElement | null
     set({ open: key })

@@ -14,10 +14,11 @@ function StatusBar() {
     const id = setInterval(() => setSec((x) => x + 1), 1000)
     return () => clearInterval(id)
   }, [])
+  const down = useStore((s) => s.unplugged.length)
   const f = (n: number) => String(n).padStart(2, '0')
   return (
     <div className="status" aria-hidden="true">
-      <i className="dot" /> rack-01 · up {f(Math.floor(sec / 3600))}:{f(Math.floor(sec / 60) % 60)}:{f(sec % 60)}
+      <i className={`dot ${down ? 'warn' : ''}`} /> rack-01 · links {8 - down}/8 · up {f(Math.floor(sec / 3600))}:{f(Math.floor(sec / 60) % 60)}:{f(sec % 60)}
     </div>
   )
 }

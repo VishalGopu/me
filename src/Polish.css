@@ -443,3 +443,67 @@ h1 {
     zoom: 0.64;
   }
 }
+
+/* ============ pluggable cables ============ */
+.cables {
+  pointer-events: none;
+}
+.cable-g {
+  cursor: pointer;
+  outline: none;
+}
+.cable-g .hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 16;
+  pointer-events: stroke;
+}
+.cable-g .cable {
+  pointer-events: none;
+  transition: stroke-width 0.15s, filter 0.15s;
+}
+.cable-g:hover .cable,
+.cable-g:focus-visible .cable {
+  stroke-width: 4.6;
+  filter: brightness(1.3) drop-shadow(0 0 5px rgba(255, 255, 255, 0.35));
+}
+.cable-g:focus-visible .hit {
+  stroke: rgba(59, 155, 255, 0.35);
+}
+.plug {
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 1;
+  pointer-events: none;
+}
+.plug.blue { fill: var(--cable-blue); }
+.plug.yellow { fill: var(--cable-yellow); }
+.plug.red { fill: var(--cable-red); }
+.plug.orange { fill: var(--cable-orange); }
+.plug.green { fill: var(--cable-green); }
+.plug.white { fill: var(--cable-white); }
+.cable-g.off {
+  animation: swing 1.4s ease-out;
+}
+.cable-g.off .cable {
+  opacity: 0.8;
+}
+@keyframes swing {
+  0% { transform: rotate(0deg); }
+  18% { transform: rotate(-5deg); }
+  40% { transform: rotate(3.5deg); }
+  62% { transform: rotate(-2deg); }
+  82% { transform: rotate(1deg); }
+  100% { transform: rotate(0deg); }
+}
+.dot.warn {
+  background: var(--led-amber);
+  box-shadow: 0 0 10px var(--led-amber);
+}
+.nudge.alert {
+  color: var(--led-red);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cable-g.off {
+    animation: none;
+  }
+}

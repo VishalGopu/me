@@ -39,6 +39,7 @@ export const tones: Record<
     tag: [string, string]
     stats: { k: string; v: string }[]
     nudge: string
+    linksDown: string
   }
 > = {
   fun: {
@@ -53,6 +54,7 @@ export const tones: Record<
       { k: 'deploys', v: '30 min → 2 min' },
     ],
     nudge: 'Go on, pull a server out of the rack.',
+    linksDown: 'All links down. Have you tried plugging it back in?',
   },
   pro: {
     label: 'professional',
@@ -66,6 +68,7 @@ export const tones: Record<
       { k: 'deploy time', v: '30 min → 2 min' },
     ],
     nudge: 'Select a server to open a section.',
+    linksDown: 'All links down. Plug a cable back in to restore the network.',
   },
 }
 

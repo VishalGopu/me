@@ -27,6 +27,7 @@ export default function Hero() {
   const tone = useStore((s) => s.tone)
   const t = tones[tone]
   const typed = useTyped(t.command)
+  const allDown = useStore((s) => s.unplugged.length === 8)
 
   return (
     <section className="hero">
@@ -62,7 +63,9 @@ export default function Hero() {
         ))}
       </dl>
 
-      <p className="nudge">→ {t.nudge}</p>
+      <p className={`nudge ${allDown ? 'alert' : ''}`}>
+        {allDown ? `✗ ${t.linksDown}` : `→ ${t.nudge}`}
+      </p>
     </section>
   )
 }
