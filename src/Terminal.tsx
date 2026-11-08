@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { experience, profile, skills, units, type UnitKey } from './content'
+import { about, experience, profile, projects, skills, units, type UnitKey } from './content'
 import { useStore } from './store'
 
 type Line = { kind: 'in' | 'out'; text: string }
@@ -15,6 +15,33 @@ Cluster:  3-node kubeadm, 250 pods
 Network:  Cilium + WireGuard
 Shell:    this one
 Uptime:   since the diploma`
+
+const RESUME = [
+  profile.name,
+  `${experience.role}, ${experience.company} (${experience.when})`,
+  '',
+  'Education',
+  ...about.education.map((e) => `  ${e.years}  ${e.school}: ${e.what} (${e.note})`),
+  '',
+  'Experience',
+  ...experience.points.slice(0, 3).map((p) => `  - ${p}`),
+  '  ... open the experience server for the rest',
+  '',
+  'Projects',
+  ...projects.map((p) => `  - ${p.name}`),
+  '',
+  `Contact: ${profile.email}`,
+].join('\n')
+
+// Illustrative output, not a live cluster.
+const PODS = `NAME                              READY   STATUS    RESTARTS   AGE
+ctf-engine-7d9f6c5b8-x2k4q        1/1     Running   0          12d
+lab-operator-5b7c9d6f4-m8w2z      1/1     Running   0          12d
+routing-gateway-6c8d7b9f5-q4n7t   1/1     Running   0          9d
+wireguard-gw-0                    1/1     Running   0          9d
+postgres-0                        1/1     Running   0          21d
+orchestrator-api-84c6d5f7b-j6r9p  1/1     Running   1          5d
+(sample output, 6 of 250 pods)`
 
 export default function Terminal() {
   const setOpen = useStore((s) => s.setOpen)
@@ -37,11 +64,18 @@ export default function Terminal() {
       case '':
         return ''
       case 'help':
-        return 'help  whoami  ls  open <section>  skills  contact  neofetch  ping  traceroute  clear'
+        return 'help  whoami  ls [projects]  cat resume  kubectl get pods  open <section>  skills  contact  neofetch  ping  traceroute  clear'
       case 'whoami':
         return `${profile.name}: DevOps and platform engineer who likes networks.`
       case 'ls':
+        if (args[0] === 'projects') return projects.map((p) => `${p.drive}/  ${p.name}`).join('\n')
         return SECTIONS.join('  ')
+      case 'cat':
+        if (args[0] === 'resume') return RESUME
+        return `cat: ${args[0] ?? ''}: No such file. Try: cat resume`
+      case 'kubectl':
+        if (args.join(' ') === 'get pods') return PODS
+        return 'error: only "kubectl get pods" is available here'
       case 'open': {
         const k = args[0] as UnitKey
         if (!SECTIONS.includes(k)) return `open: no such section "${args[0] ?? ''}". Try: ls`
