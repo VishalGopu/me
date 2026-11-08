@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react'
-import { profile, tones } from './content'
+import { hero, profile } from './content'
 import { useStore } from './store'
 
+const reduceMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+// Types the shell command once on load; shows it instantly if motion is reduced.
 function useTyped(text: string, speed = 70) {
-  const reduce =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const [n, setN] = useState(reduce ? text.length : 0)
+  const [n, setN] = useState(() => (reduceMotion() ? text.length : 0))
   useEffect(() => {
-    if (reduce) {
-      setN(text.length)
-      return
-    }
-    setN(0)
+    if (reduceMotion()) return
     let i = 0
     const id = setInterval(() => {
       i += 1
@@ -19,14 +17,12 @@ function useTyped(text: string, speed = 70) {
       if (i >= text.length) clearInterval(id)
     }, speed)
     return () => clearInterval(id)
-  }, [text, speed, reduce])
+  }, [text, speed])
   return text.slice(0, n)
 }
 
 export default function Hero() {
-  const tone = useStore((s) => s.tone)
-  const t = tones[tone]
-  const typed = useTyped(t.command)
+  const typed = useTyped(hero.command)
   const allDown = useStore((s) => s.unplugged.length === 8)
 
   return (
@@ -43,19 +39,19 @@ export default function Hero() {
         {profile.name}
         <span className="cursor" aria-hidden="true" />
       </h1>
-      <p className="tagline">{t.tagline}</p>
-      <p className="sub">{t.sub}</p>
+      <p className="tagline">{hero.tagline}</p>
+      <p className="sub">{hero.sub}</p>
 
       <div className="tag" aria-label="Asset tag">
         <span className="barcode" aria-hidden="true" />
         <span className="tag-text">
-          <b>ASSET {t.tag[0]}</b>
-          <span>{t.tag[1]}</span>
+          <b>ASSET {hero.tag[0]}</b>
+          <span>{hero.tag[1]}</span>
         </span>
       </div>
 
       <dl className="board">
-        {t.stats.map((s) => (
+        {hero.stats.map((s) => (
           <div key={s.k}>
             <dt>{s.k}</dt>
             <dd>{s.v}</dd>
@@ -63,8 +59,8 @@ export default function Hero() {
         ))}
       </dl>
 
-      <p className={`nudge ${allDown ? 'alert' : ''}`}>
-        {allDown ? `✗ ${t.linksDown}` : `→ ${t.nudge}`}
+      <p className={`nudge ${allDown ? 'alert' : ''}`} aria-live="polite">
+        {allDown ? `✗ ${hero.linksDown}` : `→ ${hero.nudge}`}
       </p>
     </section>
   )

@@ -27,49 +27,18 @@ export const units: {
   { key: 'contact', label: 'contact', hint: 'Get in touch', kind: 'router', led: 'green', lcd: 'gw-01' },
 ]
 
-// Left-hand copy in two tones, so the choice can be made by looking at both.
-export type Tone = 'fun' | 'pro'
-export const tones: Record<
-  Tone,
-  {
-    label: string
-    command: string
-    tagline: string
-    sub: string
-    tag: [string, string]
-    stats: { k: string; v: string }[]
-    nudge: string
-    linksDown: string
-  }
-> = {
-  fun: {
-    label: 'playful',
-    command: 'whoami',
-    tagline: 'I make computers talk to each other, then I make them behave.',
-    sub: 'Kubernetes · Networking · Why is it down',
-    tag: ['GV-0001', 'Property of nobody. Runs on chai.'],
-    stats: [
-      { k: 'pods', v: '250 (all fine, probably)' },
-      { k: 'learners', v: '127+ breaking my labs' },
-      { k: 'deploys', v: '30 min → 2 min' },
-    ],
-    nudge: 'Go on, pull a server out of the rack.',
-    linksDown: 'All links down. Have you tried plugging it back in?',
-  },
-  pro: {
-    label: 'professional',
-    command: 'whoami',
-    tagline: 'DevOps and platform engineer. I build and operate Kubernetes infrastructure.',
-    sub: 'Kubernetes · Networking · Platform engineering',
-    tag: ['GV-0001', 'Software Engineering Intern · Cyberparadigm'],
-    stats: [
-      { k: 'pods managed', v: '250' },
-      { k: 'learners served', v: '127+' },
-      { k: 'deploy time', v: '30 min → 2 min' },
-    ],
-    nudge: 'Select a server to open a section.',
-    linksDown: 'All links down. Plug a cable back in to restore the network.',
-  },
+export const hero = {
+  command: 'whoami',
+  tagline: 'DevOps and platform engineer. I build and operate Kubernetes infrastructure.',
+  sub: 'Kubernetes · Networking · Platform engineering',
+  tag: ['GV-0001', 'Software Engineering Intern · Cyberparadigm'],
+  stats: [
+    { k: 'pods managed', v: '250' },
+    { k: 'learners served', v: '127+' },
+    { k: 'deploy time', v: '30 min → 2 min' },
+  ],
+  nudge: 'Select a server to open a section.',
+  linksDown: 'All links down. Plug a cable back in to restore the network.',
 }
 
 export const about = {

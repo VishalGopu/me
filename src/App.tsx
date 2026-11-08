@@ -5,7 +5,7 @@ import './Polish.css'
 import Console from './Console'
 import Hero from './Hero'
 import Rack from './Rack'
-import { tones, units, type Tone } from './content'
+import { units } from './content'
 import { useStore } from './store'
 
 function StatusBar() {
@@ -24,8 +24,6 @@ function StatusBar() {
 }
 
 export default function App() {
-  const tone = useStore((s) => s.tone)
-  const setTone = useStore((s) => s.setTone)
   const setOpen = useStore((s) => s.setOpen)
 
   useEffect(() => {
@@ -59,16 +57,6 @@ export default function App() {
       </div>
       <div className="light" aria-hidden="true" />
       <StatusBar />
-
-      {/* Temporary: lets you compare both tones. Remove once you choose. */}
-      <div className="tone" role="group" aria-label="Preview tone">
-        <span>tone</span>
-        {(Object.keys(tones) as Tone[]).map((k) => (
-          <button key={k} aria-pressed={tone === k} onClick={() => setTone(k)}>
-            {tones[k].label}
-          </button>
-        ))}
-      </div>
 
       <Hero />
       <Rack />

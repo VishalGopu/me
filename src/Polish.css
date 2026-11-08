@@ -433,10 +433,6 @@ h1 {
   .rack-wrap {
     zoom: 0.74;
   }
-  .tone {
-    left: 1.25rem;
-    right: auto;
-  }
 }
 @media (max-width: 400px) {
   .rack-wrap {

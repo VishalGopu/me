@@ -36,39 +36,6 @@
   pointer-events: none;
 }
 
-/* ---------- tone preview switch ---------- */
-.tone {
-  position: absolute;
-  top: 1rem;
-  right: 1.25rem;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px;
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  background: rgba(10, 12, 15, 0.6);
-  border: 1px solid #2c333c;
-  border-radius: 999px;
-}
-.tone span {
-  padding: 0 8px;
-}
-.tone button {
-  padding: 5px 11px;
-  font: inherit;
-  color: var(--text-dim);
-  background: transparent;
-  border: 0;
-  border-radius: 999px;
-  cursor: pointer;
-}
-.tone button[aria-pressed='true'] {
-  color: #14181e;
-  background: var(--led-amber);
-}
-
 /* ---------- hero ---------- */
 .hero {
   position: relative;

@@ -38,6 +38,21 @@ export default function Console() {
         aria-modal="true"
         aria-label={unit.label}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => {
+          // keep Tab inside the open server
+          if (e.key !== 'Tab') return
+          const f = e.currentTarget.querySelectorAll<HTMLElement>('button, a[href], input, [tabindex]:not([tabindex="-1"])')
+          if (!f.length) return
+          const first = f[0]
+          const last = f[f.length - 1]
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault()
+            last.focus()
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault()
+            first.focus()
+          }
+        }}
       >
         <div className={`unit chassis kind-${unit.kind}`}>
           <i className="screw l" />
